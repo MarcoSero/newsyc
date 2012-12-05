@@ -110,28 +110,34 @@
     logoutItem = nil;
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];    	
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
 	
     // XXX: because this navigation item is shown for every tab, this is a gigantic hack:
     // we are removing it and adding it manually as this view is shown/hidden :(
-    // maybe this should be a button in the table view instead?
-    [[[self tabBarController] navigationItem] setLeftBarButtonItem:(source != nil ? logoutItem : nil)];
+    UIViewController *parentController = [[self navigationController] topViewController];
+    UINavigationItem *navigationItem = [parentController navigationItem];
+    [navigationItem setLeftBarButtonItem:(source != nil ? logoutItem : nil)];
     
     isVisible = YES;
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillAppear:animated];
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
     
-    [[[self tabBarController] navigationItem] setLeftBarButtonItem:nil];
+    UIViewController *parentController = [[self navigationController] topViewController];
+    UINavigationItem *navigationItem = [parentController navigationItem];
+    [navigationItem setLeftBarButtonItem:nil];
     
     isVisible = NO;
 }
 
-- (int)tableView:(UITableView *)table numberOfRowsInSection:(NSInteger)section {
-    if (section == 1) return [super tableView:table numberOfRowsInSection:section] + 1;
-    else return [super tableView:table numberOfRowsInSection:section];
+- (NSInteger)tableView:(UITableView *)table numberOfRowsInSection:(NSInteger)section {
+    if (section == 1) {
+        return [super tableView:table numberOfRowsInSection:section] + 1;
+    } else {
+        return [super tableView:table numberOfRowsInSection:section];
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)table cellForRowAtIndexPath:(NSIndexPath *)indexPath {
